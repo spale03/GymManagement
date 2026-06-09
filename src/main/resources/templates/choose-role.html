@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="sr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GymApp – Izaberi ulogu</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f17; --surface: #1a1a2e; --border: #2e2e48;
+      --accent: #ff6b35; --text: #e8e8f0; --muted: #8888aa;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 52px 44px; width: 100%; max-width: 460px; text-align: center; }
+    .logo { font-family: var(--font-display); font-size: 2rem; font-weight: 800; color: var(--accent); margin-bottom: 8px; }
+    .logo span { color: var(--text); }
+    h2 { font-size: 1.4rem; font-weight: 700; margin-bottom: 8px; }
+    .sub { color: var(--muted); font-size: 0.9rem; margin-bottom: 40px; }
+    .role-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    .role-card {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 16px;
+      cursor: pointer;
+      transition: border-color .2s, transform .15s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+    }
+    .role-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .role-card .icon { font-size: 2.4rem; }
+    .role-card .role-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; letter-spacing: .5px; }
+    .role-card .role-desc { font-size: 0.78rem; color: var(--muted); }
+    /* hidden radio trick */
+    .role-card input[type="submit"] {
+      position: absolute; opacity: 0; pointer-events: none;
+    }
+    form.role-form { margin: 0; }
+    button.role-btn {
+      background: none; border: none; cursor: pointer; padding: 0; width: 100%;
+    }
+    .role-card-inner {
+      background: var(--bg);
+      border: 2px solid var(--border);
+      border-radius: 10px;
+      padding: 28px 16px;
+      transition: border-color .2s, transform .15s;
+      display: flex; flex-direction: column; align-items: center; gap: 10px;
+      color: var(--text);
+    }
+    .role-card-inner:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .icon { font-size: 2.4rem; }
+    .role-name { font-family: var(--font-display); font-size: 1.25rem; font-weight: 700; letter-spacing: .5px; }
+    .role-desc { font-size: 0.78rem; color: var(--muted); }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">GYM<span>APP</span></div>
+  <h2>Dobrodošao!</h2>
+  <p class="sub">Izaberi kako želiš da koristiš aplikaciju</p>
+
+  <div class="role-grid">
+    <form th:action="@{/choose-role}" method="post">
+      <button class="role-btn" type="submit" name="role" value="MEMBER">
+        <div class="role-card-inner">
+          <span class="icon">🏋️</span>
+          <span class="role-name">ČLAN</span>
+          <span class="role-desc">Prati treninge i lajkuj trenere</span>
+        </div>
+      </button>
+    </form>
+    <form th:action="@{/choose-role}" method="post">
+      <button class="role-btn" type="submit" name="role" value="TRAINER">
+        <div class="role-card-inner">
+          <span class="icon">🎯</span>
+          <span class="role-name">TRENER</span>
+          <span class="role-desc">Upravljaj sesijama i prati feedback</span>
+        </div>
+      </button>
+    </form>
+  </div>
+</div>
+</body>
+</html>

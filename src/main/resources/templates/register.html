@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="sr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GymApp – Registracija</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f17; --surface: #1a1a2e; --border: #2e2e48;
+      --accent: #ff6b35; --accent2: #e8521f; --text: #e8e8f0;
+      --muted: #8888aa; --danger: #e05252; --radius: 10px;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
+    .card { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 44px 40px; width: 100%; max-width: 420px; }
+    .logo { font-family: var(--font-display); font-size: 2rem; font-weight: 800; letter-spacing: 1px; color: var(--accent); text-align: center; margin-bottom: 6px; }
+    .logo span { color: var(--text); }
+    .subtitle { text-align: center; color: var(--muted); font-size: 0.85rem; margin-bottom: 32px; }
+    label { display: block; font-size: 0.8rem; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .5px; margin-bottom: 6px; margin-top: 18px; }
+    input { width: 100%; padding: 11px 14px; background: var(--bg); border: 1px solid var(--border); border-radius: 6px; color: var(--text); font-family: var(--font-body); font-size: 0.95rem; transition: border-color .2s; }
+    input:focus { outline: none; border-color: var(--accent); }
+    .btn { display: block; width: 100%; margin-top: 28px; padding: 13px; background: var(--accent); color: #fff; font-family: var(--font-body); font-size: 1rem; font-weight: 700; border: none; border-radius: 6px; cursor: pointer; transition: background .2s; text-align: center; text-decoration: none; }
+    .btn:hover { background: var(--accent2); }
+    .btn-ghost { background: transparent; border: 1px solid var(--border); color: var(--muted); margin-top: 10px; }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); background: transparent; }
+    .divider { height: 1px; background: var(--border); margin: 28px 0 0; }
+    .login-link { text-align: center; margin-top: 18px; font-size: 0.875rem; color: var(--muted); }
+    .login-link a { color: var(--accent); text-decoration: none; font-weight: 600; }
+    .login-link a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="logo">GYM<span>APP</span></div>
+  <div class="subtitle">Kreiraj novi nalog</div>
+
+  <form th:action="@{/register}" method="post">
+    <label for="username">Korisničko ime</label>
+    <input id="username" type="text" name="username" required autofocus/>
+
+    <label for="password">Lozinka</label>
+    <input id="password" type="password" name="password" required/>
+
+    <button class="btn" type="submit">Registruj se</button>
+  </form>
+
+  <div class="divider"></div>
+  <div class="login-link">
+    Već imaš nalog? <a th:href="@{/login}">Prijavi se</a>
+  </div>
+</div>
+</body>
+</html>

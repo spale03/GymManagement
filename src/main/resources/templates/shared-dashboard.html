@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="sr">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>GymApp – Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Barlow+Condensed:wght@700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg: #0f0f17; --surface: #1a1a2e; --surface2: #23233a;
+      --border: #2e2e48; --accent: #ff6b35; --accent2: #e8521f;
+      --text: #e8e8f0; --muted: #8888aa; --success: #34c77b;
+      --danger: #e05252; --radius: 10px;
+      --font-display: 'Barlow Condensed', sans-serif;
+      --font-body: 'Inter', sans-serif;
+    }
+    body { font-family: var(--font-body); background: var(--bg); color: var(--text); min-height: 100vh; }
+
+    /* NAV */
+    nav {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 0 32px;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .nav-logo { font-family: var(--font-display); font-size: 1.5rem; font-weight: 800; color: var(--accent); letter-spacing: 1px; }
+    .nav-logo span { color: var(--text); }
+    .nav-right { display: flex; align-items: center; gap: 20px; }
+    .nav-user { font-size: 0.85rem; color: var(--muted); }
+    .nav-user strong { color: var(--text); }
+    .nav-role-badge {
+      background: rgba(255,107,53,.15);
+      color: var(--accent);
+      border: 1px solid rgba(255,107,53,.3);
+      border-radius: 20px;
+      padding: 3px 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      letter-spacing: .5px;
+      font-family: var(--font-display);
+    }
+    .logout-btn {
+      padding: 7px 16px;
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--muted);
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      text-decoration: none;
+      transition: all .2s;
+    }
+    .logout-btn:hover { border-color: var(--danger); color: var(--danger); }
+
+    /* MAIN LAYOUT */
+    .main-wrap { max-width: 1100px; margin: 0 auto; padding: 40px 24px; }
+    .page-header { margin-bottom: 36px; }
+    .page-header h1 { font-family: var(--font-display); font-size: 2.2rem; font-weight: 800; letter-spacing: .5px; }
+    .page-header p { color: var(--muted); font-size: 0.9rem; margin-top: 6px; }
+
+    /* ADMIN GRID */
+    .admin-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 16px; margin-bottom: 40px; }
+    .admin-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px 20px;
+      text-decoration: none;
+      color: var(--text);
+      display: flex; flex-direction: column; gap: 8px;
+      transition: border-color .2s, transform .15s;
+    }
+    .admin-card:hover { border-color: var(--accent); transform: translateY(-2px); }
+    .admin-card .card-icon { font-size: 1.8rem; }
+    .admin-card .card-label { font-family: var(--font-display); font-size: 1.1rem; font-weight: 700; letter-spacing: .3px; }
+    .admin-card .card-desc { font-size: 0.78rem; color: var(--muted); }
+
+    /* SECTION CARD */
+    .section-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 28px;
+      margin-bottom: 28px;
+    }
+    .section-card h2 {
+      font-family: var(--font-display);
+      font-size: 1.3rem;
+      font-weight: 700;
+      letter-spacing: .3px;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* TABLE */
+    table { width: 100%; border-collapse: collapse; }
+    thead tr { border-bottom: 1px solid var(--border); }
+    th { padding: 10px 14px; text-align: left; font-size: 0.75rem; font-weight: 600; text-transform: uppercase; letter-spacing: .5px; color: var(--muted); }
+    td { padding: 12px 14px; font-size: 0.9rem; border-bottom: 1px solid rgba(46,46,72,.6); vertical-align: middle; }
+    tbody tr:hover { background: var(--surface2); }
+    tbody tr:last-child td { border-bottom: none; }
+
+    /* BADGES */
+    .badge {
+      display: inline-block; padding: 3px 10px; border-radius: 20px;
+      font-size: 0.72rem; font-weight: 700; font-family: var(--font-display); letter-spacing: .4px;
+    }
+    .badge-orange { background: rgba(255,107,53,.15); color: var(--accent); border: 1px solid rgba(255,107,53,.3); }
+    .badge-green  { background: rgba(52,199,123,.12); color: var(--success); border: 1px solid rgba(52,199,123,.25); }
+
+    /* BUTTONS */
+    .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 16px; border-radius: 6px; font-size: 0.85rem; font-weight: 600; border: none; cursor: pointer; text-decoration: none; transition: all .2s; }
+    .btn-primary { background: var(--accent); color: #fff; }
+    .btn-primary:hover { background: var(--accent2); }
+    .btn-danger  { background: rgba(224,82,82,.12); color: var(--danger); border: 1px solid rgba(224,82,82,.3); }
+    .btn-danger:hover { background: var(--danger); color: #fff; }
+    .btn-ghost   { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .btn-ghost:hover { border-color: var(--accent); color: var(--accent); }
+    .btn-like   { background: rgba(52,199,123,.12); color: var(--success); border: 1px solid rgba(52,199,123,.25); }
+    .btn-like:hover { background: var(--success); color: #fff; }
+    .btn-unlike { background: rgba(224,82,82,.12); color: var(--danger); border: 1px solid rgba(224,82,82,.3); }
+    .btn-unlike:hover { background: var(--danger); color: #fff; }
+
+    /* TRAINER CARD GRID (member view) */
+    .trainer-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; }
+    .trainer-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+    }
+    .trainer-card .t-name { font-family: var(--font-display); font-size: 1.15rem; font-weight: 700; margin-bottom: 4px; }
+    .trainer-card .t-spec { font-size: 0.82rem; color: var(--muted); margin-bottom: 16px; }
+    .trainer-card .t-actions { display: flex; gap: 8px; }
+
+    /* FEEDBACK LIST */
+    .feedback-list { display: flex; flex-direction: column; gap: 14px; }
+    .feedback-item {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 16px 20px;
+    }
+    .feedback-item .f-meta { font-size: 0.8rem; color: var(--muted); margin-bottom: 6px; }
+    .feedback-item .f-content { font-size: 0.92rem; }
+    .stars { color: var(--accent); font-size: 0.9rem; }
+
+    /* SESSION TABLE empty */
+    .empty-state { text-align: center; padding: 40px; color: var(--muted); font-size: 0.9rem; }
+    form { margin: 0; display: inline; }
+  </style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">GYM<span>APP</span></div>
+  <div class="nav-right">
+    <span class="nav-user">Prijavljen: <strong th:text="${username}">korisnik</strong></span>
+    <span class="nav-role-badge" th:text="${role}">ULOGA</span>
+    <a th:href="@{/logout}" class="logout-btn">Odjavi se</a>
+  </div>
+</nav>
+
+<div class="main-wrap">
+
+  <!-- ===== ADMIN ===== -->
+  <div th:if="${role == 'ADMIN'}">
+    <div class="page-header">
+      <h1>Admin Panel</h1>
+      <p>Upravljaj korisnicima, članovima, trenerima i sesijama</p>
+    </div>
+
+    <div class="admin-grid">
+      <a class="admin-card" th:href="@{/admin/users}">
+        <span class="card-icon">👤</span>
+        <span class="card-label">Korisnici</span>
+        <span class="card-desc" th:text="${users != null ? users.size() + ' naloga' : ''}"></span>
+      </a>
+      <a class="admin-card" th:href="@{/admin/members}">
+        <span class="card-icon">🏋️</span>
+        <span class="card-label">Članovi</span>
+        <span class="card-desc" th:text="${members != null ? members.size() + ' članova' : ''}"></span>
+      </a>
+      <a class="admin-card" th:href="@{/admin/trainers}">
+        <span class="card-icon">🎯</span>
+        <span class="card-label">Treneri</span>
+        <span class="card-desc" th:text="${trainers != null ? trainers.size() + ' trenera' : ''}"></span>
+      </a>
+      <a class="admin-card" th:href="@{/admin/sessions}">
+        <span class="card-icon">📅</span>
+        <span class="card-label">Sesije</span>
+        <span class="card-desc" th:text="${sessions != null ? sessions.size() + ' sesija' : ''}"></span>
+      </a>
+      <a class="admin-card" th:href="@{/admin/feedback}">
+        <span class="card-icon">⭐</span>
+        <span class="card-label">Feedback</span>
+        <span class="card-desc" th:text="${feedbacks != null ? feedbacks.size() + ' recenzija' : ''}"></span>
+      </a>
+    </div>
+  </div>
+
+  <!-- ===== TRAINER ===== -->
+  <div th:if="${role == 'TRAINER'}">
+    <div class="page-header">
+      <h1>Trener Dashboard</h1>
+      <p>Tvoje sesije i recenzije članova</p>
+    </div>
+
+    <div class="section-card">
+      <h2>📅 Moje trening sesije</h2>
+      <table th:if="${mySessions != null and !mySessions.isEmpty()}">
+        <thead><tr><th>Naziv</th><th>Opis</th><th>Datum</th><th>Član</th></tr></thead>
+        <tbody>
+          <tr th:each="s : ${mySessions}">
+            <td th:text="${s.title}"></td>
+            <td th:text="${s.description}"></td>
+            <td><span class="badge badge-orange" th:text="${s.date}"></span></td>
+            <td th:text="${s.member != null ? s.member.name : '—'}"></td>
+          </tr>
+        </tbody>
+      </table>
+      <div class="empty-state" th:if="${mySessions == null or mySessions.isEmpty()}">Nema zakazanih sesija.</div>
+    </div>
+
+    <div class="section-card" th:if="${myFeedbacks != null and !myFeedbacks.isEmpty()}">
+      <h2>⭐ Recenzije</h2>
+      <div class="feedback-list">
+        <div class="feedback-item" th:each="f : ${myFeedbacks}">
+          <div class="f-meta">
+            Od <strong th:text="${f.member != null ? f.member.name : '?'}"></strong>
+            &nbsp;·&nbsp;
+            <span class="stars" th:text="${'★'.repeat(f.rating) + '☆'.repeat(5 - f.rating)}"></span>
+            <span th:text="${f.rating + '/5'}"></span>
+          </div>
+          <div class="f-content" th:text="${f.content}"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MEMBER ===== -->
+  <div th:if="${role == 'MEMBER'}">
+    <div class="page-header">
+      <h1>Član Dashboard</h1>
+      <p>Pregledaj trenere i prati svoje sesije</p>
+    </div>
+
+    <div class="section-card" th:if="${mySessions != null and !mySessions.isEmpty()}">
+      <h2>📅 Moje sesije</h2>
+      <table>
+        <thead><tr><th>Naziv</th><th>Opis</th><th>Datum</th><th>Trener</th></tr></thead>
+        <tbody>
+          <tr th:each="s : ${mySessions}">
+            <td th:text="${s.title}"></td>
+            <td th:text="${s.description}"></td>
+            <td><span class="badge badge-orange" th:text="${s.date}"></span></td>
+            <td th:text="${s.trainer != null ? s.trainer.name : '—'}"></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="section-card">
+      <h2>🎯 Dostupni treneri</h2>
+      <div class="trainer-grid" th:if="${trainers != null and !trainers.isEmpty()}">
+        <div class="trainer-card" th:each="t : ${trainers}">
+          <div class="t-name" th:text="${t.name}"></div>
+          <div class="t-spec" th:text="${t.specialization != null ? t.specialization : 'Opšti trening'}"></div>
+          <div class="t-actions">
+            <form th:action="@{'/member/like/' + ${t.id}}" method="post">
+              <button class="btn btn-like" type="submit">❤️ Lajkuj</button>
+            </form>
+            <form th:action="@{'/member/unlike/' + ${t.id}}" method="post">
+              <button class="btn btn-unlike" type="submit">✕ Ukloni</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      <div class="empty-state" th:if="${trainers == null or trainers.isEmpty()}">Nema trenera u sistemu.</div>
+    </div>
+  </div>
+
+  <!-- ===== USER (čeka izbor role) ===== -->
+  <div th:if="${role == 'USER'}">
+    <div class="page-header">
+      <h1>Dobrodošao!</h1>
+      <p>Izaberi ulogu da nastaviš</p>
+    </div>
+    <div class="section-card" style="text-align:center; padding: 48px;">
+      <a class="btn btn-primary" th:href="@{/choose-role}" style="font-size:1rem; padding: 13px 32px;">Izaberi ulogu →</a>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>
